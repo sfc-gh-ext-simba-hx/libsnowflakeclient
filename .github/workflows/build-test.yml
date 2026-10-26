@@ -143,7 +143,7 @@ jobs:
               if: github.ref_name == github.event.repository.default_branch && matrix.cloud_provider == 'AWS'
             - uses: actions/setup-python@v6
               with:
-                python-version: '>=3.13.5' # temporary bound until it becomes the default, https://github.com/python/cpython/issues/135151
+                python-version: '3.14.x' # temporary bound until it becomes the default, https://github.com/python/cpython/issues/135151
                 architecture: 'x64'
             - name: Test
               shell: cmd
