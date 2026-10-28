@@ -1,5 +1,6 @@
 
 #include "snowflake/AWSUtils.hpp"
+#include <snowflake/tls_policy.h>
 #include <aws/core/Aws.h>
 #include "logger/SFLogger.hpp"
 #include "logger/SFAwsLogger.hpp"
@@ -19,6 +20,8 @@
 #include <boost/url.hpp>
 #include <cctype>
 #include <cstdlib>
+
+extern "C" void sf_aws_set_tls_policy_fn(int (*fn)(CURL *));
 
 namespace Snowflake {
   namespace Client {
@@ -51,9 +54,13 @@ namespace Snowflake {
         {
           awssdk.reset();
         }
-        else if (!awssdk)
+        else
         {
-          awssdk = std::make_shared<AwsSdkInitialized>();
+          if (!awssdk)
+          {
+            awssdk = std::make_shared<AwsSdkInitialized>();
+          }
+          sf_aws_set_tls_policy_fn(sf_curl_apply_tls_policy);
         }
         s_sdkMutex.unlock();
         return awssdk;

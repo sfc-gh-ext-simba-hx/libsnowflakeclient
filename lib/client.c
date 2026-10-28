@@ -6,6 +6,7 @@
 #include <openssl/crypto.h>
 #include <snowflake/client.h>
 #include <snowflake/client_config_parser.h>
+#include <snowflake/tls_policy.h>
 #include <snowflake/Stopwatch.h>
 #include "constants.h"
 #include "client_int.h"
@@ -1519,6 +1520,13 @@ SF_STATUS STDCALL snowflake_connect(SF_CONNECT* sf) {
 
     // Reset error context
     clear_snowflake_error(&sf->error);
+
+    char tls_policy_error[512];
+    if (sf_tls_policy_check(tls_policy_error, sizeof(tls_policy_error)) != SF_STATUS_SUCCESS) {
+        SET_SNOWFLAKE_ERROR(&sf->error, SF_STATUS_ERROR_BAD_CONNECTION_PARAMS,
+                            tls_policy_error, SF_SQLSTATE_UNABLE_TO_CONNECT);
+        return SF_STATUS_ERROR_BAD_CONNECTION_PARAMS;
+    }
 
     char os_version[128];
     sf_os_version(os_version, sizeof(os_version));
