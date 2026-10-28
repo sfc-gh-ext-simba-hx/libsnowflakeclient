@@ -535,6 +535,11 @@ typedef struct SF_CONNECT {
     // MFA Token Cache
     secure_storage_ptr token_cache;
 
+    // Whether SF_CON_PORT was set by the caller. `port` is defaulted to "443"
+    // at connect time, so this is the only way to tell an explicit port from
+    // the default one when building token cache keys.
+    sf_bool port_explicit;
+
     // whether to include retry reason in retry for query request
     sf_bool include_retry_reason;
 

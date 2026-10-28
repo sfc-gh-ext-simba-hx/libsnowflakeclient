@@ -95,6 +95,7 @@ SET(TESTS_CXX
         test_unit_ocsp_cache
         test_unit_stopwatch
         test_tls_version
+        test_unit_token_cache_key
 )
 
 if (LINUX)
