@@ -26,6 +26,7 @@
 #include "memory.h"
 #include "constants.h"
 #include "client_int.h"
+#include <snowflake/tls_policy.h>
 #include "snowflake_util.h"
 
 static void
@@ -610,10 +611,9 @@ sf_bool STDCALL http_perform(CURL *curl,
             }
         }
 
-        res = curl_easy_setopt(curl, CURLOPT_SSLVERSION, (long)SSL_VERSION);
-        if (res != CURLE_OK) {
-            log_error("Unable to set SSL Version [%s]",
-                      curl_easy_strerror(res));
+        if (sf_curl_apply_tls_policy(curl) != 0) {
+            log_error("Failed to apply TLS policy");
+            res = CURLE_SSL_CONNECT_ERROR;
             break;
         }
 
@@ -767,6 +767,13 @@ sf_bool STDCALL http_perform(CURL *curl,
                                   SF_SQLSTATE_UNABLE_TO_CONNECT);
             }
             else if (res == CURLE_PEER_FAILED_VERIFICATION)
+            {
+              log_error(msg);
+              SET_SNOWFLAKE_ERROR(error, SF_STATUS_ERROR_CURL,
+                  msg,
+                  SF_SQLSTATE_UNABLE_TO_CONNECT);
+            }
+            else if (res == CURLE_SSL_CONNECT_ERROR)
             {
               log_error(msg);
               SET_SNOWFLAKE_ERROR(error, SF_STATUS_ERROR_CURL,

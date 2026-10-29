@@ -66,6 +66,8 @@ set(SOURCE_FILES
         lib/chunk_downloader.c
         lib/mock_http_perform.h
         lib/http_perform.c
+        include/snowflake/tls_policy.h
+        lib/tls_policy.c
 )
 
 set (SOURCE_FILES_PUT_GET
@@ -160,6 +162,7 @@ set(SOURCE_FILES_CPP_WRAPPER
         include/snowflake/SecureStorage.hpp
         include/snowflake/TomlConfigParser.hpp
         include/snowflake/PlatformDetection.hpp
+        include/snowflake/FileLock.hpp
         cpp/lib/Exceptions.cpp
         cpp/lib/Connection.cpp
         cpp/lib/Statement.cpp
@@ -198,7 +201,6 @@ set(SOURCE_FILES_CPP_WRAPPER
         cpp/platform/SecureStorageLinux.cpp
         cpp/platform/SecureStorageWin.cpp
         cpp/platform/FileLock.cpp
-        cpp/platform/FileLock.hpp
         cpp/util/SnowflakeCommon.cpp
         cpp/util/SFURL.cpp
         cpp/util/CurlDesc.cpp
